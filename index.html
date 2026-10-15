@@ -146,6 +146,43 @@
       .prev { left: 0; }
       .next { right: 0; }
     }
+    
+/* Autorska mozaika fotograficzna */
+
+.gallery {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.photo {
+  --ratio: 1;
+  flex-grow: var(--ratio);
+  flex-shrink: 1;
+  flex-basis: calc(var(--ratio) * 240px);
+  min-width: 0;
+  margin: 0;
+}
+
+.photo img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Zapobiega rozciąganiu ostatniego rzędu */
+.gallery::after {
+  content: "";
+  flex: 1000 1 0;
+}
+
+@media (max-width: 600px) {
+  .photo {
+    flex-basis: calc(var(--ratio) * 170px);
+  }
+}
+
   </style>
 </head>
 <body>
@@ -196,6 +233,14 @@
     img.src = photo.src;
     img.alt = photo.alt;
     img.loading = "lazy";
+    
+img.addEventListener("load", () => {
+  const ratio = img.naturalWidth / img.naturalHeight;
+  if (Number.isFinite(ratio) && ratio > 0) {
+    button.style.setProperty("--ratio", ratio);
+  }
+});
+
 
     button.appendChild(img);
     button.addEventListener("click", () => openPhoto(index));
